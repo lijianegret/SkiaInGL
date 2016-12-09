@@ -32,6 +32,8 @@
     GLuint _depthRenderBuffer;
 }
 
+- (void) render:(CADisplayLink *)displayLink;
+
 @end
 
 #endif /* OpenGLView_h */

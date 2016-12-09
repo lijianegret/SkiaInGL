@@ -38,12 +38,26 @@
     [self.view addSubview:_skiaView];
     
     [self.view setBackgroundColor:[UIColor redColor]];
+    
+    [self setupDisplayLink];
 }
 
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) setupDisplayLink
+{
+    CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
+    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+}
+
+- (void) render:(CADisplayLink *)displayLink
+{
+    [_glView render:displayLink];
+    [self setupDisplayLink];
 }
 
 

@@ -194,11 +194,6 @@ GLfloat modelView2[] = {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
-- (void) setupDisplayLink {
-    CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
-    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-}
-
 - (void) render:(CADisplayLink *)displayLink
 {
     glClearColor(0.5, 0.5, 1.0, 1.0);
@@ -232,8 +227,6 @@ GLfloat modelView2[] = {
     [_context presentRenderbuffer:GL_RENDERBUFFER];
     
     glDisable(GL_DEPTH_TEST);
-    
-    [self setupDisplayLink];
 }
 
 - (id) initWithFrame:(CGRect)frame
@@ -250,8 +243,6 @@ GLfloat modelView2[] = {
         
         [self compileShaders];
         [self setupVBOs];
-        
-        [self setupDisplayLink];
     }
     return self;
 }
