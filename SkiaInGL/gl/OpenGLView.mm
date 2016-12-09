@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "OpenGLView.h"
+#include "General.h"
 
 typedef struct {
     float Position[3];
@@ -82,19 +83,7 @@ const GLfloat modelView2[] = {
 
 - (void) setupContext
 {
-    EAGLRenderingAPI api = kEAGLRenderingAPIOpenGLES2;
-    _context = [[EAGLContext alloc] initWithAPI:api];
-    if (!_context)
-    {
-        NSLog(@"Failed to initialize OpenGLES 2.0 context");
-        exit(1);
-    }
-    
-    if (![EAGLContext setCurrentContext:_context])
-    {
-        NSLog(@"Failed to set current OpenGL context");
-        exit(1);
-    }
+    _context = General::getInstance()->_context;
 }
 
 - (void) setupDepthBuffer
