@@ -1,1 +1,1 @@
-# vulkan_test
+# render with OpenGL ES and Skia
