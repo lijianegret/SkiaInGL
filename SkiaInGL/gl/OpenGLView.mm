@@ -61,11 +61,11 @@ const GLfloat modelView[] = {
     0.000000, 0.000000, -7.000000, 1.000000
 };
 
-const GLfloat modelView2[] = {
+GLfloat modelView2[] = {
     1.000000, 0.000000, 0.000000, 0.000000,
     0.000000, 1.000000, 0.000000, 0.000000,
     0.000000, 0.000000, 1.000000, 0.000000,
-    1.000000, 1.000000, -7.000000, 1.000000
+    0.000000, 1.000000, -7.000000, 1.000000
 };
 
 @implementation OpenGLView
@@ -201,7 +201,7 @@ const GLfloat modelView2[] = {
 
 - (void) render:(CADisplayLink *)displayLink
 {
-    glClearColor(0, 104.0/255.0, 55.0/255.0, 1.0);
+    glClearColor(0.5, 0.5, 1.0, 1.0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -217,6 +217,13 @@ const GLfloat modelView2[] = {
     
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
+    
+    float offsetX = displayLink.duration / 10;
+    modelView2[12] += offsetX;
+    if (modelView2[12] > 3.0)
+    {
+        modelView2[12] = -3.0;
+    }
     
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView2);
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
