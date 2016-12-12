@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "OpenGLView.h"
 #include "General.h"
+#include <SkCGUtils.h>
+#include <SkPath.h>
 
 typedef struct {
     float Position[3];
@@ -201,6 +203,44 @@ GLfloat modelView2[] = {
 
 - (void) render:(CADisplayLink *)displayLink
 {
+    //skia
+    SkPaint paint;
+    paint.setColor(SK_ColorBLUE);
+    paint.setAntiAlias(true);
+    
+    _canvas->clear(0x00000000);
+    
+    _canvas->drawText("AAA", 3, 50, 50, paint);
+    
+    _canvas->save();
+    
+    const SkScalar scale = 256.0f;
+    const SkScalar R = 0.45f * scale;
+    const SkScalar TAU = 6.2831853f;
+    SkPath path;
+    path.moveTo(R, 0.0f);
+    for (int i = 1; i < 7; ++i) {
+        SkScalar theta = 3 * i * TAU / 7;
+        path.lineTo(R * cos(theta), R * sin(theta));
+    }
+    path.close();
+    paint.setColor(SK_ColorRED);
+    _canvas->translate(0.5f * scale, 0.5f * scale);
+    _rot += 1;
+    if (_rot > 360)
+    {
+        _rot -= 360;
+    }
+    _canvas->rotate(_rot);
+    _canvas->drawPath(path, paint);
+    
+    _canvas->restore();
+    
+    CGImageRef cgImage = SkCreateCGImageRef(_bitmap);
+    _rasterLayer.contents = (__bridge id)cgImage;
+    CGImageRelease(cgImage);
+    
+    // gl
     glClearColor(0.5, 0.5, 1.0, 1.0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -234,11 +274,33 @@ GLfloat modelView2[] = {
     glDisable(GL_DEPTH_TEST);
 }
 
+- (void) setupSkiaLayer
+{
+    _rasterLayer = [CALayer layer];
+    _rasterLayer.bounds = self.bounds;
+    _rasterLayer.anchorPoint = CGPointMake(0, 0);
+    [self.layer addSublayer:_rasterLayer];
+    
+    _bitmap.allocN32Pixels(0, 0);
+    SkImageInfo info = _bitmap.info().makeWH(_width, _height);
+    _bitmap.allocPixels(info);
+    
+    _surface = SkSurface::MakeRasterDirect(_bitmap.info(), _bitmap.getPixels(), _bitmap.rowBytes());
+    
+    _canvas = _surface->getCanvas();
+    
+    _rot = 0;
+}
+
 - (id) initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
+        _width = frame.size.width;
+        _height = frame.size.height;
+        
         [self setupLayer];
+        [self setupSkiaLayer];
         [self setupContext];
         
         [self setupDepthBuffer];

@@ -12,6 +12,7 @@
 #include <OpenGLES/ES2/glext.h>
 #include "General.h"
 #include <SkCGUtils.h>
+#include <SkPath.h>
 
 @implementation SkiaView
 
@@ -53,11 +54,29 @@
 {
     SkPaint paint;
     paint.setColor(SK_ColorBLUE);
+    paint.setAntiAlias(true);
     
     _canvas->clear(0xFFFFFF00);
-//    _canvas->save();
     
     _canvas->drawText("AAA", 3, 10, 10, paint);
+    
+    _canvas->save();
+    
+    const SkScalar scale = 256.0f;
+    const SkScalar R = 0.45f * scale;
+    const SkScalar TAU = 6.2831853f;
+    SkPath path;
+    path.moveTo(R, 0.0f);
+    for (int i = 1; i < 7; ++i) {
+        SkScalar theta = 3 * i * TAU / 7;
+        path.lineTo(R * cos(theta), R * sin(theta));
+    }
+    path.close();
+    paint.setColor(SK_ColorRED);
+    _canvas->translate(0.5f * scale, 0.5f * scale);
+    _canvas->drawPath(path, paint);
+    
+    _canvas->restore();
     
     CGImageRef cgImage = SkCreateCGImageRef(_bitmap);
     _rasterLayer.contents = (__bridge id)cgImage;
