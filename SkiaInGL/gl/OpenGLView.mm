@@ -77,8 +77,13 @@ GLfloat modelView2[] = {
 
 - (void) setupLayer
 {
-    _eaglLayer = (CAEAGLLayer *)self.layer;
+//    _eaglLayer = (CAEAGLLayer *)self.layer;
+//    _eaglLayer.opaque = YES;
+    _eaglLayer = [CAEAGLLayer layer];
+    _eaglLayer.bounds = self.bounds;
+    _eaglLayer.anchorPoint = CGPointMake(0, 0);
     _eaglLayer.opaque = YES;
+    [self.layer addSublayer:_eaglLayer];
 }
 
 - (void) setupContext

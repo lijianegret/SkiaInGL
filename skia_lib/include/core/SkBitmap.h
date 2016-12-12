@@ -327,7 +327,7 @@ public:
         If the bitmap retains a reference to the colortable (assuming it is
         not null) it will take care of incrementing the reference count.
 
-        @param pixels   Address for the pixels, managed by the caller.
+        @param p   Address for the pixels, managed by the caller.
         @param ctable   ColorTable (or null) that matches the specified pixels
     */
     void setPixels(void* p, SkColorTable* ctable = NULL);

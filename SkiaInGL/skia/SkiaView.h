@@ -11,21 +11,23 @@
 
 #import <UIKit/UIKit.h>
 #include <SkBitmap.h>
+#include <SkSurface.h>
+#include <SkCanvas.h>
 
 @interface SkiaView : UIView
 {
     EAGLContext* _context;
-    GLuint _renderBuffer;
-    GLuint _stencailBuffer;
-    GLuint _frameBuffer;
-    GLuint _width;
-    GLuint _height;
     
     CALayer* _rasterLayer;
-    CAEAGLLayer* _glLayer;
     
-    
+    SkBitmap _bitmap;
+    sk_sp<SkSurface> _surface;
+    SkCanvas* _canvas;
+    int _width;
+    int _height;
 }
+
+- (void) render:(CADisplayLink *)displayLink;
 
 @end
 

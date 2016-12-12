@@ -56,6 +56,7 @@
 
 - (void) render:(CADisplayLink *)displayLink
 {
+    [_skiaView render:displayLink];
     [_glView render:displayLink];
     [self setupDisplayLink];
 }
