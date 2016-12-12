@@ -10,6 +10,7 @@
 #define SkiaView_h
 
 #import <UIKit/UIKit.h>
+#include <SkBitmap.h>
 
 @interface SkiaView : UIView
 {
@@ -22,6 +23,8 @@
     
     CALayer* _rasterLayer;
     CAEAGLLayer* _glLayer;
+    
+    
 }
 
 @end
