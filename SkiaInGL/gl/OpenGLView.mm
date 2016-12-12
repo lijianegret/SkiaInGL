@@ -225,13 +225,7 @@ GLfloat modelView2[] = {
     }
     path.close();
     paint.setColor(SK_ColorRED);
-    _canvas->translate(0.5f * scale, 0.5f * scale);
-    _rot += 1;
-    if (_rot > 360)
-    {
-        _rot -= 360;
-    }
-    _canvas->rotate(_rot);
+    _canvas->translate(0.5f * scale, 0.5f * scale + modelView2[12] * 10);
     _canvas->drawPath(path, paint);
     
     _canvas->restore();
