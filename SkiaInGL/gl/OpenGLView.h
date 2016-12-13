@@ -32,6 +32,8 @@
     GLuint _textureUniform;
     GLuint _depthRenderBuffer;
     
+    GLuint _texture[2];
+    
     
     CALayer* _rasterLayer;
     SkBitmap _bitmap;

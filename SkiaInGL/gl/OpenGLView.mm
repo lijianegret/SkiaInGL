@@ -189,12 +189,50 @@ GLfloat modelView2[] = {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
+- (void) loadTexture
+{
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_SRC_COLOR);
+    
+    glGenTextures(2, &_texture[0]);
+    
+    glBindTexture(GL_TEXTURE_2D, _texture[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"1" ofType:@"png"];
+    NSData* texData = [[NSData alloc] initWithContentsOfFile:path];
+    UIImage* image = [[UIImage alloc] initWithData:texData];
+    
+    GLuint width = CGImageGetWidth(image.CGImage);
+    GLuint height = CGImageGetHeight(image.CGImage);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    void* imageData = malloc(height * width * 4);
+    
+    CGContextRef context = CGBitmapContextCreate(imageData, width, height, 8, 4 * width,
+                                                 colorSpace,
+                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big );
+    CGColorSpaceRelease(colorSpace);
+    CGContextClearRect(context, CGRectMake(0, 0, width, height));
+    CGContextTranslateCTM(context, 0, height - height);
+    CGContextDrawImage(context, CGRectMake( 0, 0, width, height ), image.CGImage);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, imageData);
+    
+    CGContextRelease(context);
+    
+    free(imageData);
+}
+
 - (void) render:(CADisplayLink *)displayLink
 {
     //skia
     SkPaint paint;
     paint.setColor(SK_ColorBLUE);
     paint.setAntiAlias(true);
+    paint.setTextSize(80);
     
     _canvas->clear(0x00000000);
     
@@ -222,15 +260,18 @@ GLfloat modelView2[] = {
     _rasterLayer.contents = (__bridge id)cgImage;
     CGImageRelease(cgImage);
     
+    glBindTexture(GL_TEXTURE_2D, _texture[1]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, _bitmap.getPixels());
+    
     // gl
     glClearColor(0.5, 0.5, 1.0, 1.0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, 0);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, _bitmap.getPixels());
     
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection);
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView);
@@ -243,6 +284,7 @@ GLfloat modelView2[] = {
     glVertexAttribPointer(_uvSlot, 2, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), (GLvoid*)(sizeof(float) * 7));
     
+    glBindTexture(GL_TEXTURE_2D, _texture[0]);
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
     
@@ -254,6 +296,7 @@ GLfloat modelView2[] = {
     }
     
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView2);
+    glBindTexture(GL_TEXTURE_2D, _texture[1]);
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
     
@@ -268,9 +311,9 @@ GLfloat modelView2[] = {
     _rasterLayer.bounds = self.bounds;
     _rasterLayer.anchorPoint = CGPointMake(0, 0);
     [self.layer addSublayer:_rasterLayer];
-    
-    SkGraphics::Init();
-    
+//
+//    SkGraphics::Init();
+//    
     _bitmap.allocN32Pixels(0, 0);
     SkImageInfo info = _bitmap.info().makeWH(_width, _height);
     info.makeColorType(SkColorType::kBGRA_8888_SkColorType);
@@ -279,20 +322,26 @@ GLfloat modelView2[] = {
     _surface = SkSurface::MakeRasterDirect(_bitmap.info(), _bitmap.getPixels(), _bitmap.rowBytes());
     
     _canvas = _surface->getCanvas();
+//
+//    _rot = 0;
+//    
+//    SkAutoLockPixels alp(_bitmap);
+//    
+//    glEnable(GL_TEXTURE_2D);
+//    glGenTextures(1, &_textureId);
+//    glBindTexture(GL_TEXTURE_2D, _textureId);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    
+//    NSLog(@" >>>>>>> %d %d", _bitmap.width(), _bitmap.height());
     
-    _rot = 0;
-    
-    SkAutoLockPixels alp(_bitmap);
-    
-    glEnable(GL_TEXTURE_2D);
-    glGenTextures(1, &_textureId);
-    glBindTexture(GL_TEXTURE_2D, _textureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    
-    NSLog(@" >>>>>>> %d %d", _bitmap.width(), _bitmap.height());
+//    const GrGLInterface* interface = nullptr;
+//    _grContext = GrContext::Create(kOpenGL_GrBackend, (GrBackendContext)interface);
+//    SkImageInfo info = SkImageInfo::MakeN32Premul(_width, _height);
+//    _surface = SkSurface::MakeRenderTarget(_grContext, SkBudgeted::kYes, info);
+//    _canvas = _surface->getCanvas();
 }
 
 - (id) initWithFrame:(CGRect)frame
@@ -303,8 +352,8 @@ GLfloat modelView2[] = {
         _height = 512;
         
         [self setupLayer];
-        [self setupSkiaLayer];
         [self setupContext];
+        [self setupSkiaLayer];
         
         [self setupDepthBuffer];
         
@@ -313,6 +362,7 @@ GLfloat modelView2[] = {
         
         [self compileShaders];
         [self setupVBOs];
+        [self loadTexture];
     }
     return self;
 }
