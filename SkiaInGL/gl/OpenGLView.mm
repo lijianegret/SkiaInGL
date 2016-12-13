@@ -10,43 +10,29 @@
 #import "OpenGLView.h"
 #include "General.h"
 #include <SkCGUtils.h>
+#include <GrGLFunctions.h>
+#include <GrGLInterface.h>
 #include <SkPath.h>
+#include <GrContext.h>
+#include <SkGraphics.h>
 
 typedef struct {
     float Position[3];
     float Color[4];
+    float UV[2];
 } Vertex;
 
 const Vertex Vertices[] = {
-    {{1, -1, 0}, {1, 0, 0, 1}},
-    {{1, 1, 0}, {1, 0, 0, 1}},
-    {{-1, 1, 0}, {0, 1, 0, 1}},
-    {{-1, -1, 0}, {0, 1, 0, 1}},
-    {{1, -1, -1}, {1, 0, 0, 1}},
-    {{1, 1, -1}, {1, 0, 0, 1}},
-    {{-1, 1, -1}, {0, 1, 0, 1}},
-    {{-1, -1, -1}, {0, 1, 0, 1}}
+    {{1, -1, 0}, {0.5f, 0, 0, 0.5f}, {1, 1}},
+    {{1, 1, 0}, {0.5f, 0, 0, 0.5f}, {1, 0}},
+    {{-1, 1, 0}, {0, 0.5f, 0, 0.5f}, {0, 0}},
+    {{-1, -1, 0}, {0, 0.5f, 0, 0.5f}, {0, 1}}
 };
 
 const GLubyte Indices[] = {
     // Front
     0, 1, 2,
-    2, 3, 0,
-    // Back
-    4, 6, 5,
-    4, 7, 6,
-    // Left
-    2, 7, 3,
-    7, 6, 2,
-    // Right
-    0, 4, 1,
-    4, 1, 5,
-    // Top
-    6, 2, 1,
-    1, 6, 5,
-    // Bottom
-    0, 3, 7,
-    0, 7, 4
+    2, 3, 0
 };
 
 const GLfloat projection[] = {
@@ -178,14 +164,16 @@ GLfloat modelView2[] = {
     
     glUseProgram(programHandle);
     
-    _positionSlot = glGetAttribLocation(programHandle, "Position");
-    _colorSlot = glGetAttribLocation(programHandle, "SourceColor");
+    _positionSlot = glGetAttribLocation(programHandle, "a_position");
+    _colorSlot = glGetAttribLocation(programHandle, "a_color");
+    _uvSlot = glGetAttribLocation(programHandle, "a_uv");
     glEnableVertexAttribArray(_positionSlot);
     glEnableVertexAttribArray(_colorSlot);
+    glEnableVertexAttribArray(_uvSlot);
     
-    _projectionUniform = glGetUniformLocation(programHandle, "Projection");
-    
-    _modelViewUniform = glGetUniformLocation(programHandle, "Modelview");
+    _projectionUniform = glGetUniformLocation(programHandle, "u_projection");
+    _modelViewUniform = glGetUniformLocation(programHandle, "u_modelView");
+    _textureUniform = glGetUniformLocation(programHandle, "u_samplerTexture");
 }
 
 - (void) setupVBOs
@@ -240,6 +228,10 @@ GLfloat modelView2[] = {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA,
+                 GL_UNSIGNED_BYTE, 0);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, _bitmap.getPixels());
+    
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection);
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView);
     glViewport(0, 0, self.frame.size.width, self.frame.size.height);
@@ -247,7 +239,9 @@ GLfloat modelView2[] = {
     glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), 0);
     glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE,
-                          sizeof(Vertex), (GLvoid*) (sizeof(float) *3));
+                          sizeof(Vertex), (GLvoid*)(sizeof(float) * 3));
+    glVertexAttribPointer(_uvSlot, 2, GL_FLOAT, GL_FALSE,
+                          sizeof(Vertex), (GLvoid*)(sizeof(float) * 7));
     
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
@@ -275,8 +269,11 @@ GLfloat modelView2[] = {
     _rasterLayer.anchorPoint = CGPointMake(0, 0);
     [self.layer addSublayer:_rasterLayer];
     
+    SkGraphics::Init();
+    
     _bitmap.allocN32Pixels(0, 0);
     SkImageInfo info = _bitmap.info().makeWH(_width, _height);
+    info.makeColorType(SkColorType::kBGRA_8888_SkColorType);
     _bitmap.allocPixels(info);
     
     _surface = SkSurface::MakeRasterDirect(_bitmap.info(), _bitmap.getPixels(), _bitmap.rowBytes());
@@ -284,14 +281,26 @@ GLfloat modelView2[] = {
     _canvas = _surface->getCanvas();
     
     _rot = 0;
+    
+    SkAutoLockPixels alp(_bitmap);
+    
+    glEnable(GL_TEXTURE_2D);
+    glGenTextures(1, &_textureId);
+    glBindTexture(GL_TEXTURE_2D, _textureId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
+    NSLog(@" >>>>>>> %d %d", _bitmap.width(), _bitmap.height());
 }
 
 - (id) initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        _width = frame.size.width;
-        _height = frame.size.height;
+        _width = 512;
+        _height = 512;
         
         [self setupLayer];
         [self setupSkiaLayer];

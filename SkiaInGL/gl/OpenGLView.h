@@ -25,9 +25,11 @@
     
     GLuint _positionSlot;
     GLuint _colorSlot;
+    GLuint _uvSlot;
     
     GLuint _projectionUniform;
     GLuint _modelViewUniform;
+    GLuint _textureUniform;
     GLuint _depthRenderBuffer;
     
     
@@ -35,7 +37,9 @@
     SkBitmap _bitmap;
     sk_sp<SkSurface> _surface;
     SkCanvas* _canvas;
+    GrContext* _grContext;
     float _rot;
+    GLuint _textureId;
     
     
     int _width;

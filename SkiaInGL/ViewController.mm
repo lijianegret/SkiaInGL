@@ -58,7 +58,7 @@
 {
 //    [_skiaView render:displayLink];
     [_glView render:displayLink];
-    [self setupDisplayLink];
+//    [self setupDisplayLink];
 }
 
 

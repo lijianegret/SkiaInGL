@@ -1,5 +1,8 @@
-varying lowp vec4 DestinationColor; // 1
+varying lowp vec4 v_color;
+varying lowp vec2 v_uv;
 
-void main(void) { // 2
-    gl_FragColor = DestinationColor; // 3
+uniform sampler2D u_samplerTexture;
+
+void main(void) {
+    gl_FragColor = v_color + texture2D(u_samplerTexture, v_uv);
 }

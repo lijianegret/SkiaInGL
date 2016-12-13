@@ -1,24 +1,16 @@
-attribute vec4 Position; // 1
-attribute vec4 SourceColor; // 2
+attribute vec4 a_position;
+attribute vec4 a_color;
+attribute vec2 a_uv;
 
-varying vec4 DestinationColor; // 3
+varying vec4 v_color;
+varying vec2 v_uv;
 
-// Add right before the main
-uniform mat4 Projection;
+uniform mat4 u_projection;
+uniform mat4 u_modelView;
 
-
-// Add right after the Projection uniform
-uniform mat4 Modelview;
-
-
-void main(void) { // 4
-    DestinationColor = SourceColor; // 5
-//    gl_Position = Position; // 6
+void main(void) {
+    v_color = a_color;
+    v_uv = a_uv;
     
-    // Modify gl_Position line as follows
-//    gl_Position = Projection * Position;
-    
-    
-    // Modify the gl_Position line
-    gl_Position = Projection * Modelview * Position;
+    gl_Position = u_projection * u_modelView * a_position;
 }
