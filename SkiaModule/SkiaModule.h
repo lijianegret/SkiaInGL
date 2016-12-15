@@ -36,10 +36,10 @@ public:
     
     void drawText(const char* text, size_t byteLength, float x, float y);
     
-//private:
+private:
     SkiaModule();
     
-//private:
+private:
     static SkiaModule* _skiaModule;
     SkiaModuleCanvas* _currentCanvas;
 };

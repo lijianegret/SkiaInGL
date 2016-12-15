@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "OpenGLView.h"
-#import "SkiaView.h"
 
 @interface ViewController ()
 
@@ -25,19 +24,10 @@
     
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
     
-//    float height = screenBounds.size.height / 2;
     CGRect glViewBounds = CGRectMake(screenBounds.origin.x, screenBounds.origin.y,
                                      screenBounds.size.width, screenBounds.size.height);
     _glView = [[OpenGLView alloc] initWithFrame:glViewBounds];
     [self.view addSubview:_glView];
-    
-//    CGRect skiaViewBounds = CGRectMake(screenBounds.origin.x, screenBounds.origin.y + height + 1,
-//                                       screenBounds.size.width, height - 1);
-//    _skiaView = [[SkiaView alloc] initWithFrame:skiaViewBounds];
-//    [_skiaView setBackgroundColor:[UIColor whiteColor]];
-//    [self.view addSubview:_skiaView];
-//    
-//    [self.view setBackgroundColor:[UIColor redColor]];
     
     [self setupDisplayLink];
 }
@@ -56,7 +46,6 @@
 
 - (void) render:(CADisplayLink *)displayLink
 {
-//    [_skiaView render:displayLink];
     [_glView render:displayLink];
 //    [self setupDisplayLink];
 }

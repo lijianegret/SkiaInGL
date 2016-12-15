@@ -19,7 +19,6 @@
 class SkiaModuleCanvas
 {
 public:
-    SkiaModuleCanvas();
     SkiaModuleCanvas(int width, int height);
     ~SkiaModuleCanvas();
     
@@ -42,7 +41,7 @@ public:
     
     void drawText(const char* text, size_t byteLength, float x, float y);
     
-//private:
+private:
     SkBitmap _bitmap;
     sk_sp<SkSurface> _surface;
     SkCanvas* _canvas;

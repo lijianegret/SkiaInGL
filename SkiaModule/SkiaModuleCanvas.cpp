@@ -8,11 +8,6 @@
 
 #include "SkiaModuleCanvas.h"
 
-SkiaModuleCanvas::SkiaModuleCanvas()
-{
-    
-}
-
 SkiaModuleCanvas::SkiaModuleCanvas(int width, int height)
 {
     _bitmap.allocN32Pixels(0, 0);
@@ -65,8 +60,6 @@ void SkiaModuleCanvas::clear(uint32_t clearColor)
 void SkiaModuleCanvas::drawText(const char* text, size_t byteLength, float x, float y)
 {
     _canvas->drawText(text, byteLength, x, y, _paint);
-    _paint.setStrokeWidth(10);
-    _canvas->drawLine(0, 0, _width, _height, _paint);
 }
 
 

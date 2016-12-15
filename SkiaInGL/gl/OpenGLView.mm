@@ -235,18 +235,7 @@ GLfloat modelView2[] = {
     _skiaModule->setTextSize(80);
     _skiaModule->clear(0x00000000);
     _skiaModule->drawText("ABC", 3, 50, 50);
-//    SkPaint paint;
-//    paint.setColor(Skia_ColorRED);
-//    paint.setAntiAlias(true);
-//    paint.setTextSize(80);
-//    _skiaModule->_currentCanvas->_canvas->clear(0x00000000);
-//    _skiaModule->_currentCanvas->_canvas->drawText("ABC", 3, 50, 50, paint);
-//    glBindTexture(GL_TEXTURE_2D, _texture1);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA,
-//                 GL_UNSIGNED_BYTE, _skiaModule->_currentCanvas->_bitmap.getPixels());
+    
     _skiaModule->getCanvasRenderTexture(_texture1);
     
     
@@ -294,15 +283,6 @@ GLfloat modelView2[] = {
     _skiaModule = SkiaModule::getInstance();
     _skiaModule->createCanvas(_width, _height);
     
-//    _skiaModule->_currentCanvas = new SkiaModuleCanvas();
-//    _skiaModule->_currentCanvas->_bitmap.allocN32Pixels(0, 0);
-//    SkImageInfo info = _skiaModule->_currentCanvas->_bitmap.info().makeWH(_width, _height);
-//    info.makeColorType(SkColorType::kBGRA_8888_SkColorType);
-//    _skiaModule->_currentCanvas->_bitmap.allocPixels(info);
-//    
-//    _skiaModule->_currentCanvas->_surface = SkSurface::MakeRasterDirect(_skiaModule->_currentCanvas->_bitmap.info(), _skiaModule->_currentCanvas->_bitmap.getPixels(), _skiaModule->_currentCanvas->_bitmap.rowBytes());
-//    _skiaModule->_currentCanvas->_canvas = _skiaModule->_currentCanvas->_surface->getCanvas();
-//    
     glGenTextures(1, &_texture1);
     
 }
