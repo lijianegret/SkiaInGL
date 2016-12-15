@@ -7,10 +7,20 @@
 //
 
 #include "SkiaModuleCanvas.h"
+#include "SkiaModuleCanvasStore.h"
 
-SkiaModuleCanvas::SkiaModuleCanvas(int width, int height)
+SkiaModuleCanvas::SkiaModuleCanvas()
 {
     _bitmap.allocN32Pixels(0, 0);
+}
+
+void SkiaModuleCanvas::resize(int width, int height)
+{
+    if (_width == width && _height == height)
+    {
+        return;
+    }
+    
     SkImageInfo info = _bitmap.info().makeWH(width, height);
     info.makeColorType(SkColorType::kBGRA_8888_SkColorType);
     _bitmap.allocPixels(info);

@@ -8,6 +8,7 @@
 
 #include "SkiaModule.h"
 #include "SkiaModuleCanvas.h"
+#include "SkiaModuleCanvasStore.h"
 
 SkiaModule* SkiaModule::_skiaModule = nullptr;
 
@@ -23,7 +24,7 @@ SkiaModule* SkiaModule::getInstance()
 SkiaModule::SkiaModule()
 : _currentCanvas(nullptr)
 {
-    
+    _canvasStore = new SkiaModuleCanvasStore();
 }
 
 SkiaModule::~SkiaModule()
@@ -31,9 +32,15 @@ SkiaModule::~SkiaModule()
     
 }
 
+void SkiaModule::update()
+{
+    _canvasStore->update();
+}
+
 void SkiaModule::createCanvas(int width, int height)
 {
-    _currentCanvas = new SkiaModuleCanvas(width, height);
+    _currentCanvas = _canvasStore->getNewCanvas();
+    _currentCanvas->resize(width, height);
 }
 
 void SkiaModule::getCanvasRenderTexture(GLuint textureId)

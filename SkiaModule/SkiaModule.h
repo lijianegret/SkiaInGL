@@ -10,11 +10,13 @@
 #include <stdlib.h>
 
 class SkiaModuleCanvas;
+class SkiaModuleCanvasStore;
 class SkiaModule
 {
 public:
     static SkiaModule* getInstance();
     ~SkiaModule();
+    void update();
     
     void createCanvas(int width, int height);
     void getCanvasRenderTexture(GLuint textureId);
@@ -42,4 +44,5 @@ private:
 private:
     static SkiaModule* _skiaModule;
     SkiaModuleCanvas* _currentCanvas;
+    SkiaModuleCanvasStore* _canvasStore;
 };

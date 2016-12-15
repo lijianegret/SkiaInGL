@@ -230,6 +230,9 @@ GLfloat modelView2[] = {
 {
     //skia
     _skiaModule = SkiaModule::getInstance();
+    
+    _skiaModule->createCanvas(_width, _height);
+    
     _skiaModule->setColor(Skia_ColorRED);
     _skiaModule->setAntiAlias(true);
     _skiaModule->setTextSize(80);
@@ -276,12 +279,14 @@ GLfloat modelView2[] = {
     [_context presentRenderbuffer:GL_RENDERBUFFER];
     
     glDisable(GL_DEPTH_TEST);
+    
+    _skiaModule->update();
 }
 
 - (void) setupSkiaLayer
 {
     _skiaModule = SkiaModule::getInstance();
-    _skiaModule->createCanvas(_width, _height);
+//    _skiaModule->createCanvas(_width, _height);
     
     glGenTextures(1, &_texture1);
     

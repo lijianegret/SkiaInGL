@@ -19,8 +19,9 @@
 class SkiaModuleCanvas
 {
 public:
-    SkiaModuleCanvas(int width, int height);
+    SkiaModuleCanvas();
     ~SkiaModuleCanvas();
+    void resize(int width, int height);
     
     void getCanvasRenderTexture(GLuint textureId);
     
