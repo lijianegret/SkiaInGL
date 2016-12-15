@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>SkiaModule.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>87CEFE611DF6ED86000DA0FB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>87EB1B231E0174E500CF1806</key>
 		<dict>
 			<key>primary</key>
 			<true/>

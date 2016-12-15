@@ -10,11 +10,11 @@
 #import "OpenGLView.h"
 #include "General.h"
 #include <SkCGUtils.h>
-#include <GrGLFunctions.h>
-#include <GrGLInterface.h>
 #include <SkPath.h>
-#include <GrContext.h>
 #include <SkGraphics.h>
+
+#include "SkiaModuleConstants.h"
+#include "SkiaModuleCanvas.h"
 
 typedef struct {
     float Position[3];
@@ -195,9 +195,9 @@ GLfloat modelView2[] = {
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_SRC_COLOR);
     
-    glGenTextures(2, &_texture[0]);
+    glGenTextures(1, &_texture);
     
-    glBindTexture(GL_TEXTURE_2D, _texture[0]);
+    glBindTexture(GL_TEXTURE_2D, _texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
@@ -229,43 +229,26 @@ GLfloat modelView2[] = {
 - (void) render:(CADisplayLink *)displayLink
 {
     //skia
-    SkPaint paint;
-    paint.setColor(SK_ColorBLUE);
-    paint.setAntiAlias(true);
-    paint.setTextSize(80);
+    _skiaModule = SkiaModule::getInstance();
+    _skiaModule->setColor(Skia_ColorRED);
+    _skiaModule->setAntiAlias(true);
+    _skiaModule->setTextSize(80);
+    _skiaModule->clear(0x00000000);
+    _skiaModule->drawText("ABC", 3, 50, 50);
+//    SkPaint paint;
+//    paint.setColor(Skia_ColorRED);
+//    paint.setAntiAlias(true);
+//    paint.setTextSize(80);
+//    _skiaModule->_currentCanvas->_canvas->clear(0x00000000);
+//    _skiaModule->_currentCanvas->_canvas->drawText("ABC", 3, 50, 50, paint);
+//    glBindTexture(GL_TEXTURE_2D, _texture1);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA,
+//                 GL_UNSIGNED_BYTE, _skiaModule->_currentCanvas->_bitmap.getPixels());
+    _skiaModule->getCanvasRenderTexture(_texture1);
     
-    _canvas->clear(0x00000000);
-    
-    _canvas->drawText("AAA", 3, 50, 50, paint);
-    
-    _canvas->save();
-    
-    const SkScalar scale = 256.0f;
-    const SkScalar R = 0.45f * scale;
-    const SkScalar TAU = 6.2831853f;
-    SkPath path;
-    path.moveTo(R, 0.0f);
-    for (int i = 1; i < 7; ++i) {
-        SkScalar theta = 3 * i * TAU / 7;
-        path.lineTo(R * cos(theta), R * sin(theta));
-    }
-    path.close();
-    paint.setColor(SK_ColorRED);
-    _canvas->translate(0.5f * scale, 0.5f * scale + modelView2[12] * 10);
-    _canvas->drawPath(path, paint);
-    
-    _canvas->restore();
-    
-    CGImageRef cgImage = SkCreateCGImageRef(_bitmap);
-    _rasterLayer.contents = (__bridge id)cgImage;
-    CGImageRelease(cgImage);
-    
-    glBindTexture(GL_TEXTURE_2D, _texture[1]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, _bitmap.getPixels());
     
     // gl
     glClearColor(0.5, 0.5, 1.0, 1.0);
@@ -284,7 +267,8 @@ GLfloat modelView2[] = {
     glVertexAttribPointer(_uvSlot, 2, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), (GLvoid*)(sizeof(float) * 7));
     
-    glBindTexture(GL_TEXTURE_2D, _texture[0]);
+    glBindTexture(GL_TEXTURE_2D, _texture1);
+//    _skiaModule->getCanvasRenderTexture();
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
     
@@ -296,7 +280,7 @@ GLfloat modelView2[] = {
     }
     
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView2);
-    glBindTexture(GL_TEXTURE_2D, _texture[1]);
+    glBindTexture(GL_TEXTURE_2D, _texture);
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
     
@@ -307,41 +291,20 @@ GLfloat modelView2[] = {
 
 - (void) setupSkiaLayer
 {
-    _rasterLayer = [CALayer layer];
-    _rasterLayer.bounds = self.bounds;
-    _rasterLayer.anchorPoint = CGPointMake(0, 0);
-    [self.layer addSublayer:_rasterLayer];
-//
-//    SkGraphics::Init();
-//    
-    _bitmap.allocN32Pixels(0, 0);
-    SkImageInfo info = _bitmap.info().makeWH(_width, _height);
-    info.makeColorType(SkColorType::kBGRA_8888_SkColorType);
-    _bitmap.allocPixels(info);
+    _skiaModule = SkiaModule::getInstance();
+    _skiaModule->createCanvas(_width, _height);
     
-    _surface = SkSurface::MakeRasterDirect(_bitmap.info(), _bitmap.getPixels(), _bitmap.rowBytes());
+//    _skiaModule->_currentCanvas = new SkiaModuleCanvas();
+//    _skiaModule->_currentCanvas->_bitmap.allocN32Pixels(0, 0);
+//    SkImageInfo info = _skiaModule->_currentCanvas->_bitmap.info().makeWH(_width, _height);
+//    info.makeColorType(SkColorType::kBGRA_8888_SkColorType);
+//    _skiaModule->_currentCanvas->_bitmap.allocPixels(info);
+//    
+//    _skiaModule->_currentCanvas->_surface = SkSurface::MakeRasterDirect(_skiaModule->_currentCanvas->_bitmap.info(), _skiaModule->_currentCanvas->_bitmap.getPixels(), _skiaModule->_currentCanvas->_bitmap.rowBytes());
+//    _skiaModule->_currentCanvas->_canvas = _skiaModule->_currentCanvas->_surface->getCanvas();
+//    
+    glGenTextures(1, &_texture1);
     
-    _canvas = _surface->getCanvas();
-//
-//    _rot = 0;
-//    
-//    SkAutoLockPixels alp(_bitmap);
-//    
-//    glEnable(GL_TEXTURE_2D);
-//    glGenTextures(1, &_textureId);
-//    glBindTexture(GL_TEXTURE_2D, _textureId);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//    
-//    NSLog(@" >>>>>>> %d %d", _bitmap.width(), _bitmap.height());
-    
-//    const GrGLInterface* interface = nullptr;
-//    _grContext = GrContext::Create(kOpenGL_GrBackend, (GrBackendContext)interface);
-//    SkImageInfo info = SkImageInfo::MakeN32Premul(_width, _height);
-//    _surface = SkSurface::MakeRenderTarget(_grContext, SkBudgeted::kYes, info);
-//    _canvas = _surface->getCanvas();
 }
 
 - (id) initWithFrame:(CGRect)frame

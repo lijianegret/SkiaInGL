@@ -16,6 +16,7 @@
 #include <SkBitmap.h>
 #include <SkSurface.h>
 #include <SkCanvas.h>
+#include "SkiaModule.h"
 
 @interface OpenGLView : UIView
 {
@@ -32,16 +33,11 @@
     GLuint _textureUniform;
     GLuint _depthRenderBuffer;
     
-    GLuint _texture[2];
+    GLuint _texture;
+    GLuint _texture1;
     
     
-    CALayer* _rasterLayer;
-    SkBitmap _bitmap;
-    sk_sp<SkSurface> _surface;
-    SkCanvas* _canvas;
-    GrContext* _grContext;
-    float _rot;
-    GLuint _textureId;
+    SkiaModule* _skiaModule;
     
     
     int _width;
