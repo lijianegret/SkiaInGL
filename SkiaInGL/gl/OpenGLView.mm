@@ -46,14 +46,14 @@ const GLfloat modelView[] = {
     1.000000, 0.000000, 0.000000, 0.000000,
     0.000000, 1.000000, 0.000000, 0.000000,
     0.000000, 0.000000, 1.000000, 0.000000,
-    0.000000, 0.000000, -7.000000, 1.000000
+    0.000000, -2.000000, -5.000000, 1.000000
 };
 
 GLfloat modelView2[] = {
     1.000000, 0.000000, 0.000000, 0.000000,
     0.000000, 1.000000, 0.000000, 0.000000,
     0.000000, 0.000000, 1.000000, 0.000000,
-    0.000000, 1.000000, -7.000000, 1.000000
+    0.000000, 2.000000, -5.000000, 1.000000
 };
 
 @implementation OpenGLView
@@ -238,6 +238,28 @@ GLfloat modelView2[] = {
     _skiaModule->setTextSize(80);
     _skiaModule->clear(0x00000000);
     _skiaModule->drawText("ABC", 3, 50, 50);
+    
+    _skiaModule->setColor(Skia_ColorBLUE);
+    _skiaModule->drawRect(50, 50, 100, 100);
+    _skiaModule->drawCircle(100, 200, 50);
+    _skiaModule->drawEllipse(50, 250, 150, 100);
+    _skiaModule->drawArc(200, 100, 50, 0, 200, false);
+    
+    _skiaModule->setColor(Skia_ColorGREEN);
+    _skiaModule->save();
+    _skiaModule->translate(200, 200);
+    const float scale = 256.0f;
+    const float R = 0.45f * scale;
+    const float TAU = 6.2831853f;
+    _skiaModule->beginPath();
+    _skiaModule->pathMoveTo(R, 0.0f);
+    for (int i = 1; i < 7; ++i)
+    {
+        SkScalar theta = 3 * i * TAU / 7;
+        _skiaModule->pathLineTo(R * cos(theta), R * sin(theta));
+    }
+    _skiaModule->endPath();
+    _skiaModule->restore();
     
     _skiaModule->getCanvasRenderTexture(_texture1);
     

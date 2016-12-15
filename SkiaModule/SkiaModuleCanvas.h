@@ -39,6 +39,15 @@ public:
     void endPath();
     void pathMoveTo(float x, float y);
     void pathLineTo(float x, float y);
+    void pathCurveTo(float controlX, float controlY, float anchorX, float anchorY);
+    void pathCubeCurveTo(float controlX1, float controlY1, float controlX2, float controlY2,
+                         float anchorX, float anchorY);
+    
+    void drawRect(float x, float y, float width, float height);
+    void drawRoundRect(float x, float y, float width, float height, float ellipseWidth, float ellipseHeight);
+    void drawArc(float x, float y, float radius, float startAngle, float endAngle, bool antiClockWise);
+    void drawCircle(float x, float y, float radius);
+    void drawEllipse(float x, float y, float width, float height);
     
     void drawText(const char* text, size_t byteLength, float x, float y);
     
@@ -47,6 +56,7 @@ private:
     sk_sp<SkSurface> _surface;
     SkCanvas* _canvas;
     SkPaint _paint;
+    SkPath _path;
     
     int _width;
     int _height;

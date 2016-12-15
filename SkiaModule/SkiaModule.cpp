@@ -68,6 +68,78 @@ void SkiaModule::clear(uint32_t clearColor)
     _currentCanvas->clear(clearColor);
 }
 
+void SkiaModule::save()
+{
+    _currentCanvas->save();
+}
+
+void SkiaModule::restore()
+{
+    _currentCanvas->restore();
+}
+
+void SkiaModule::translate(float dx, float dy)
+{
+    _currentCanvas->translate(dx, dy);
+}
+
+void SkiaModule::beginPath()
+{
+    _currentCanvas->beginPath();
+}
+
+void SkiaModule::endPath()
+{
+    _currentCanvas->endPath();
+}
+
+void SkiaModule::pathMoveTo(float x, float y)
+{
+    _currentCanvas->pathMoveTo(x, y);
+}
+
+void SkiaModule::pathLineTo(float x, float y)
+{
+    _currentCanvas->pathLineTo(x, y);
+}
+
+void SkiaModule::pathCurveTo(float controlX, float controlY, float anchorX, float anchorY)
+{
+    _currentCanvas->pathCurveTo(controlX, controlY, anchorX, anchorY);
+}
+
+void SkiaModule::pathCubeCurveTo(float controlX1, float controlY1, float controlX2, float controlY2,
+                                 float anchorX, float anchorY)
+{
+    _currentCanvas->pathCubeCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+}
+
+void SkiaModule::drawRect(float x, float y, float width, float height)
+{
+    _currentCanvas->drawRect(x, y, width, height);
+}
+
+void SkiaModule::drawRoundRect(float x, float y, float width, float height, float ellipseWidth,
+                               float ellipseHeight)
+{
+    _currentCanvas->drawRoundRect(x, y, width, height, ellipseWidth, ellipseHeight);
+}
+
+void SkiaModule::drawArc(float x, float y, float radius, float startAngle, float endAngle, bool antiClockWise)
+{
+    _currentCanvas->drawArc(x, y, radius, startAngle, endAngle, antiClockWise);
+}
+
+void SkiaModule::drawCircle(float x, float y, float radius)
+{
+    _currentCanvas->drawCircle(x, y, radius);
+}
+
+void SkiaModule::drawEllipse(float x, float y, float width, float height)
+{
+    _currentCanvas->drawEllipse(x, y, width, height);
+}
+
 void SkiaModule::drawText(const char* text, size_t byteLength, float x, float y)
 {
     _currentCanvas->drawText(text, byteLength, x, y);
