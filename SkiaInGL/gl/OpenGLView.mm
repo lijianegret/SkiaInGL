@@ -229,39 +229,42 @@ GLfloat modelView2[] = {
 - (void) render:(CADisplayLink *)displayLink
 {
     //skia
-    _skiaModule = SkiaModule::getInstance();
+    _skiaManager->createCanvas(0, 0, _width, _height);
+    _skiaManager->drawRect(50, 50, 200, 200);
     
-    _skiaModule->createCanvas(_width, _height);
-    
-    _skiaModule->setColor(Skia_ColorRED);
-    _skiaModule->setAntiAlias(true);
-    _skiaModule->setTextSize(80);
-    _skiaModule->clear(0x00000000);
-    _skiaModule->drawText("ABC", 3, 50, 50);
-    
-    _skiaModule->setColor(Skia_ColorBLUE);
-    _skiaModule->drawRect(50, 50, 100, 100);
-    _skiaModule->drawCircle(100, 200, 50);
-    _skiaModule->drawEllipse(50, 250, 150, 100);
-    _skiaModule->drawArc(200, 100, 50, 0, 200, false);
-    
-    _skiaModule->setColor(Skia_ColorGREEN);
-    _skiaModule->save();
-    _skiaModule->translate(200, 200);
-    const float scale = 256.0f;
-    const float R = 0.45f * scale;
-    const float TAU = 6.2831853f;
-    _skiaModule->beginPath();
-    _skiaModule->pathMoveTo(R, 0.0f);
-    for (int i = 1; i < 7; ++i)
-    {
-        SkScalar theta = 3 * i * TAU / 7;
-        _skiaModule->pathLineTo(R * cos(theta), R * sin(theta));
-    }
-    _skiaModule->endPath();
-    _skiaModule->restore();
-    
-    _skiaModule->getCanvasRenderTexture(_texture1);
+//    _skiaModule = SkiaModule::getInstance();
+//    
+//    _skiaModule->createCanvas(_width, _height);
+//    
+//    _skiaModule->setColor(Skia_ColorRED);
+//    _skiaModule->setAntiAlias(true);
+//    _skiaModule->setTextSize(80);
+//    _skiaModule->clear(0x00000000);
+//    _skiaModule->drawText("ABC", 3, 50, 50);
+//    
+//    _skiaModule->setColor(Skia_ColorBLUE);
+//    _skiaModule->drawRect(50, 50, 100, 100);
+//    _skiaModule->drawCircle(100, 200, 50);
+//    _skiaModule->drawEllipse(50, 250, 150, 100);
+//    _skiaModule->drawArc(200, 100, 50, 0, 200, false);
+//    
+//    _skiaModule->setColor(Skia_ColorGREEN);
+//    _skiaModule->save();
+//    _skiaModule->translate(200, 200);
+//    const float scale = 256.0f;
+//    const float R = 0.45f * scale;
+//    const float TAU = 6.2831853f;
+//    _skiaModule->beginPath();
+//    _skiaModule->pathMoveTo(R, 0.0f);
+//    for (int i = 1; i < 7; ++i)
+//    {
+//        SkScalar theta = 3 * i * TAU / 7;
+//        _skiaModule->pathLineTo(R * cos(theta), R * sin(theta));
+//    }
+//    _skiaModule->endPath();
+//    _skiaModule->restore();
+//    
+//    _skiaModule->getCanvasRenderTexture(_texture1);
     
     
     // gl
@@ -281,7 +284,7 @@ GLfloat modelView2[] = {
     glVertexAttribPointer(_uvSlot, 2, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), (GLvoid*)(sizeof(float) * 7));
     
-    glBindTexture(GL_TEXTURE_2D, _texture1);
+    glBindTexture(GL_TEXTURE_2D, _texture);
 //    _skiaModule->getCanvasRenderTexture();
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
@@ -294,7 +297,8 @@ GLfloat modelView2[] = {
     }
     
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView2);
-    glBindTexture(GL_TEXTURE_2D, _texture);
+    _skiaManager->getCanvasRenderTexture();
+//    glBindTexture(GL_TEXTURE_2D, _skiaManager->getCanvasRenderTexture());
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
     
@@ -302,15 +306,17 @@ GLfloat modelView2[] = {
     
     glDisable(GL_DEPTH_TEST);
     
-    _skiaModule->update();
+//    _skiaModule->update();
+    _skiaManager->update();
 }
 
 - (void) setupSkiaLayer
 {
-    _skiaModule = SkiaModule::getInstance();
+//    _skiaModule = SkiaModule::getInstance();
 //    _skiaModule->createCanvas(_width, _height);
+    _skiaManager = new egret::SkiaManager();
     
-    glGenTextures(1, &_texture1);
+//    glGenTextures(1, &_texture1);
     
 }
 

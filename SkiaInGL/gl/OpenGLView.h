@@ -17,6 +17,7 @@
 #include <SkSurface.h>
 #include <SkCanvas.h>
 #include "SkiaModule.h"
+#include "SkiaManager.h"
 
 @interface OpenGLView : UIView
 {
@@ -37,7 +38,8 @@
     GLuint _texture1;
     
     
-    SkiaModule* _skiaModule;
+//    SkiaModule* _skiaModule;
+    egret::SkiaManager* _skiaManager;
     
     
     int _width;
