@@ -27,4 +27,7 @@
 #define Skia_ColorCYAN        0xFF00FFFF  //!< cyan SkColor value
 #define Skia_ColorMAGENTA     0xFFFF00FF  //!< magenta SkColor value
 
+#define Skia_RenderStroke     1
+#define Skia_RenderFill       2
+
 #endif /* SkiaModuleConstants_h */

@@ -54,6 +54,7 @@ void SkiaManager::createCanvas(float x, float y, float width, float height)
 
 void SkiaManager::drawRect(float x, float y, float width, float height)
 {
+    _skiaModule->setPaintStyle(3);
     _skiaModule->setColor(Skia_ColorRED);
     _skiaModule->drawRect(x, y, width, height);
 }

@@ -83,6 +83,11 @@ void SkiaModule::translate(float dx, float dy)
     _currentCanvas->translate(dx, dy);
 }
 
+void SkiaModule::setPaintStyle(int style)
+{
+    _currentCanvas->setPaintStyle(style);
+}
+
 void SkiaModule::beginPath()
 {
     _currentCanvas->beginPath();

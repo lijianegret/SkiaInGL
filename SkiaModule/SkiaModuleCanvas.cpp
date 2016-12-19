@@ -80,6 +80,21 @@ void SkiaModuleCanvas::translate(float dx, float dy)
     _canvas->translate(dx, dy);
 }
 
+void SkiaModuleCanvas::setPaintStyle(int style)
+{
+    if (style == 1)
+    {
+        _paint.setStyle(SkPaint::kFill_Style);
+    }
+    else if (style == 3)
+    {
+        _paint.setStyle(SkPaint::kStroke_Style);
+    }
+    else {
+        _paint.setStyle(SkPaint::kFill_Style);
+    }
+}
+
 void SkiaModuleCanvas::beginPath()
 {
     _path.reset();

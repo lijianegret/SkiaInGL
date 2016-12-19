@@ -230,6 +230,7 @@ GLfloat modelView2[] = {
 {
     //skia
     _skiaManager->createCanvas(0, 0, 32, 32);
+//    _skiaManager->
     _skiaManager->drawRect(5, 5, 10, 10);
     GLuint temp = _skiaManager->getCanvasRenderTexture();
     

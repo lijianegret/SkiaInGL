@@ -31,6 +31,7 @@ public:
     void restore();
     void translate(float dx, float dy);
     
+    void setPaintStyle(int style);
     void beginPath();
     void endPath();
     void pathMoveTo(float x, float y);
