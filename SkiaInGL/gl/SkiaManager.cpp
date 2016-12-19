@@ -76,3 +76,10 @@ GLuint SkiaManager::getCanvasRenderTexture()
     
     return _textureList[_texListIndex++];;
 }
+
+void SkiaManager::bindTexture(GLuint textureId)
+{
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    bool temp = glIsTexture(textureId);
+    temp = true;
+}

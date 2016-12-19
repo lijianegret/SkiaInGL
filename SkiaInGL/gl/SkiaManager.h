@@ -30,6 +30,7 @@ namespace egret
         void drawRect(float x, float y, float width, float height);
         
         GLuint getCanvasRenderTexture();
+        void bindTexture(GLuint textureId);
         
     private:
         SkiaModule* _skiaModule;

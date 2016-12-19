@@ -229,8 +229,9 @@ GLfloat modelView2[] = {
 - (void) render:(CADisplayLink *)displayLink
 {
     //skia
-    _skiaManager->createCanvas(0, 0, _width, _height);
-    _skiaManager->drawRect(50, 50, 200, 200);
+    _skiaManager->createCanvas(0, 0, 32, 32);
+    _skiaManager->drawRect(5, 5, 10, 10);
+    GLuint temp = _skiaManager->getCanvasRenderTexture();
     
 //    _skiaModule = SkiaModule::getInstance();
 //    
@@ -297,7 +298,7 @@ GLfloat modelView2[] = {
     }
     
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView2);
-    _skiaManager->getCanvasRenderTexture();
+    _skiaManager->bindTexture(temp);
 //    glBindTexture(GL_TEXTURE_2D, _skiaManager->getCanvasRenderTexture());
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]),
                    GL_UNSIGNED_BYTE, 0);
