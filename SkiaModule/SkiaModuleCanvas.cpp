@@ -50,6 +50,11 @@ void SkiaModuleCanvas::setColor(uint32_t color)
     _paint.setColor(color);
 }
 
+void SkiaModuleCanvas::setStrokeWidth(int width)
+{
+    _paint.setStrokeWidth(width);
+}
+
 void SkiaModuleCanvas::setAntiAlias(bool antiAlias)
 {
     _paint.setAntiAlias(antiAlias);

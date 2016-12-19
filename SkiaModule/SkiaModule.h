@@ -22,6 +22,7 @@ public:
     void getCanvasRenderTexture(GLuint textureId);
     
     void setColor(uint32_t color);
+    void setStrokeWidth(int width);
     void setAntiAlias(bool antiAlias);
     void setTextSize(float textSize);
     

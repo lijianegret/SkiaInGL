@@ -53,6 +53,11 @@ void SkiaModule::setColor(uint32_t color)
     _currentCanvas->setColor(color);
 }
 
+void SkiaModule::setStrokeWidth(int width)
+{
+    _currentCanvas->setStrokeWidth(width);
+}
+
 void SkiaModule::setAntiAlias(bool antiAlias)
 {
     _currentCanvas->setAntiAlias(antiAlias);
