@@ -155,6 +155,11 @@ void SkiaModule::drawText(const char* text, size_t byteLength, float x, float y)
     _currentCanvas->drawText(text, byteLength, x, y);
 }
 
+void SkiaModule::drawText(const char* text, size_t byteLength, float x, float y, float width, float height)
+{
+    _currentCanvas->drawText(text, byteLength, x, y, width, height);
+}
+
 
 
 

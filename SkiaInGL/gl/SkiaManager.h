@@ -28,6 +28,7 @@ namespace egret
         void createCanvas(float x, float y, float width, float height);
         
         void drawRect(float x, float y, float width, float height);
+        void drawText(const char* text, size_t byteLength, float x, float y, float width, float height);
         
         GLuint getCanvasRenderTexture();
         void bindTexture(GLuint textureId);

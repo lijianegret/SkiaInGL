@@ -8,10 +8,24 @@
 
 #include "SkiaModuleCanvas.h"
 #include "SkiaModuleCanvasStore.h"
+#include <SkTextBox.h>
+#include <SkTypeface.h>
+#include <SkFontMgr.h>
 
 SkiaModuleCanvas::SkiaModuleCanvas()
 {
     _bitmap.allocN32Pixels(0, 0);
+    
+    sk_sp<SkTypeface> typeFace = SkTypeface::MakeFromFile("/System/Library/Fonts/STHeiti Medium.ttc");
+    if (typeFace)
+    {
+        _paint.setTypeface(typeFace);
+    }
+    else
+    {
+        typeFace = SkTypeface::MakeFromFile("/System/Library/Fonts/Core/STHeiti-Medium.ttc");
+        _paint.setTypeface(typeFace);
+    }
 }
 
 void SkiaModuleCanvas::resize(int width, int height)
@@ -169,6 +183,16 @@ void SkiaModuleCanvas::drawEllipse(float x, float y, float width, float height)
 void SkiaModuleCanvas::drawText(const char* text, size_t byteLength, float x, float y)
 {
     _canvas->drawText(text, byteLength, x, y, _paint);
+}
+
+void SkiaModuleCanvas::drawText(const char* text, size_t byteLength, float x, float y, float width, float height)
+{
+    SkTextBox textBox;
+    textBox.setMode(SkTextBox::kLineBreak_Mode);
+    textBox.setBox(x, y, x + width, y + height);
+    textBox.setSpacing(1, 0);
+    textBox.setText(text, byteLength, _paint);
+    textBox.draw(_canvas);
 }
 
 

@@ -54,9 +54,17 @@ void SkiaManager::createCanvas(float x, float y, float width, float height)
 
 void SkiaManager::drawRect(float x, float y, float width, float height)
 {
-    _skiaModule->setPaintStyle(3);
-    _skiaModule->setColor(Skia_ColorRED);
+//    _skiaModule->setPaintStyle(3);
+    _skiaModule->setColor(Skia_ColorGRAY);
     _skiaModule->drawRect(x, y, width, height);
+}
+
+void SkiaManager::drawText(const char* text, size_t byteLength, float x, float y, float width, float height)
+{
+    _skiaModule->setTextSize(40);
+    _skiaModule->setColor(Skia_ColorRED);
+//    _skiaModule->drawText(text, byteLength, x, y);
+    _skiaModule->drawText(text, byteLength, x, y, width, height);
 }
 
 GLuint SkiaManager::getCanvasRenderTexture()

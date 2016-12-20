@@ -48,6 +48,7 @@ public:
     void drawEllipse(float x, float y, float width, float height);
     
     void drawText(const char* text, size_t byteLength, float x, float y);
+    void drawText(const char* text, size_t byteLength, float x, float y, float width, float height);
     
 private:
     SkiaModule();

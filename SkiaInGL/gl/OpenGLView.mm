@@ -229,9 +229,10 @@ GLfloat modelView2[] = {
 - (void) render:(CADisplayLink *)displayLink
 {
     //skia
-    _skiaManager->createCanvas(0, 0, 32, 32);
-//    _skiaManager->
-    _skiaManager->drawRect(5, 5, 10, 10);
+    _skiaManager->createCanvas(0, 0, 256, 256);
+    _skiaManager->drawRect(0, 0, 128, 60);
+    _skiaManager->drawText("abcd", 4, 0, 60, 128, 128);
+    _skiaManager->drawText("(啊)", 5, 0, 188, 128, 128);
     GLuint temp = _skiaManager->getCanvasRenderTexture();
     
 //    _skiaModule = SkiaModule::getInstance();
@@ -318,6 +319,9 @@ GLfloat modelView2[] = {
 //    _skiaModule->createCanvas(_width, _height);
     _skiaManager = new egret::SkiaManager();
     
+    NSFileManager* s_fileManager = [NSFileManager defaultManager];
+    bool temp = [s_fileManager fileExistsAtPath:[NSString stringWithUTF8String:"/System/Library/Fonts/Core/STHeiti-Medium.ttc"]];
+    NSLog(@"%d", temp);
 //    glGenTextures(1, &_texture1);
     
 }
