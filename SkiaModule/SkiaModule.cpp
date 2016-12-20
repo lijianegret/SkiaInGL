@@ -53,6 +53,12 @@ void SkiaModule::setColor(uint32_t color)
     _currentCanvas->setColor(color);
 }
 
+void SkiaModule::setAlpha(float alpha)
+{
+    uint32_t alpha_int = (uint32_t)alpha * 255;
+    _currentCanvas->setAlpha(alpha_int);
+}
+
 void SkiaModule::setStrokeWidth(int width)
 {
     _currentCanvas->setStrokeWidth(width);
@@ -61,6 +67,11 @@ void SkiaModule::setStrokeWidth(int width)
 void SkiaModule::setAntiAlias(bool antiAlias)
 {
     _currentCanvas->setAntiAlias(antiAlias);
+}
+
+int SkiaModule::getTextSize(const char* text, int length)
+{
+    return _currentCanvas->getTextSize(text, length);
 }
 
 void SkiaModule::setTextSize(float textSize)

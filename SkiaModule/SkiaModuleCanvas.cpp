@@ -64,6 +64,11 @@ void SkiaModuleCanvas::setColor(uint32_t color)
     _paint.setColor(color);
 }
 
+void SkiaModuleCanvas::setAlpha(uint32_t alpha)
+{
+    _paint.setAlpha(alpha);
+}
+
 void SkiaModuleCanvas::setStrokeWidth(int width)
 {
     _paint.setStrokeWidth(width);
@@ -72,6 +77,11 @@ void SkiaModuleCanvas::setStrokeWidth(int width)
 void SkiaModuleCanvas::setAntiAlias(bool antiAlias)
 {
     _paint.setAntiAlias(antiAlias);
+}
+
+int SkiaModuleCanvas::getTextSize(const char* text, int length)
+{
+    return _paint.measureText(text, length);
 }
 
 void SkiaModuleCanvas::setTextSize(float textSize)
