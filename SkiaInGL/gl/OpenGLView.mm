@@ -15,6 +15,9 @@
 
 #include "SkiaModuleConstants.h"
 #include "SkiaModuleCanvas.h"
+#include "SkiaManager.h"
+#include "SkiaImage.h"
+#include <stdio.h>
 
 typedef struct {
     float Position[3];
@@ -55,6 +58,8 @@ GLfloat modelView2[] = {
     0.000000, 0.000000, 1.000000, 0.000000,
     0.000000, 2.000000, -5.000000, 1.000000
 };
+
+bool loaded = false;
 
 @implementation OpenGLView
 
@@ -201,33 +206,60 @@ GLfloat modelView2[] = {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"1" ofType:@"png"];
+    SkiaImage* skImage = new SkiaImage();
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"bg" ofType:@"jpg"];
     NSData* texData = [[NSData alloc] initWithContentsOfFile:path];
-    UIImage* image = [[UIImage alloc] initWithData:texData];
+//    UIImage* image = [[UIImage alloc] initWithData:texData];
+//    
+//    GLuint width = CGImageGetWidth(image.CGImage);
+//    GLuint height = CGImageGetHeight(image.CGImage);
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    void* imageData = malloc(height * width * 4);
+//    
+//    CGContextRef context = CGBitmapContextCreate(imageData, width, height, 8, 4 * width,
+//                                                 colorSpace,
+//                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big );
+//    CGColorSpaceRelease(colorSpace);
+//    CGContextClearRect(context, CGRectMake(0, 0, width, height));
+////    CGContextTranslateCTM(context, 0, height - height);
+//    CGContextDrawImage(context, CGRectMake( 0, 0, width, height ), image.CGImage);
     
-    GLuint width = CGImageGetWidth(image.CGImage);
-    GLuint height = CGImageGetHeight(image.CGImage);
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    void* imageData = malloc(height * width * 4);
+    skImage->initWithImageData((unsigned char *)texData.bytes, texData.length);
     
-    CGContextRef context = CGBitmapContextCreate(imageData, width, height, 8, 4 * width,
-                                                 colorSpace,
-                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big );
-    CGColorSpaceRelease(colorSpace);
-    CGContextClearRect(context, CGRectMake(0, 0, width, height));
-    CGContextTranslateCTM(context, 0, height - height);
-    CGContextDrawImage(context, CGRectMake( 0, 0, width, height ), image.CGImage);
+//    unsigned long pSize = 0;
+//    unsigned char * data = NULL;
+//    FILE* fp = fopen([path UTF8String], "rb");
+//    fseek(fp,0,SEEK_END);
+//    pSize = ftell(fp);
+//    
+//    fseek(fp,0,SEEK_SET);
+//    
+//    data = (unsigned char*)malloc(pSize+2);
+//    memset(data , 0 , pSize+2 );
+//    
+//    pSize = fread(data,sizeof(unsigned char), pSize,fp);
+//    
+//    fclose(fp);
+//    
+//    skImage->p = [path UTF8String];
+//    skImage->initWithImageData(data, pSize);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, skImage->getWidth(), skImage->getHeight(),
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, skImage->getData());
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-                 GL_UNSIGNED_BYTE, imageData);
-    
-    CGContextRelease(context);
-    
-    free(imageData);
+//    CGContextRelease(context);
+//    
+//    free(imageData);
 }
 
 - (void) render:(CADisplayLink *)displayLink
 {
+    if (!loaded)
+    {
+        loaded = true;
+        [self loadTexture];
+    }
+    
     //skia
     _skiaManager->createCanvas(0, 0, 256, 256);
     _skiaManager->drawRect(0, 0, 128, 60);
@@ -344,7 +376,7 @@ GLfloat modelView2[] = {
         
         [self compileShaders];
         [self setupVBOs];
-        [self loadTexture];
+//        [self loadTexture];
     }
     return self;
 }
