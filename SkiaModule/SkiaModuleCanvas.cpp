@@ -79,11 +79,6 @@ void SkiaModuleCanvas::setAntiAlias(bool antiAlias)
     _paint.setAntiAlias(antiAlias);
 }
 
-int SkiaModuleCanvas::getTextSize(const char* text, int length)
-{
-    return _paint.measureText(text, length);
-}
-
 void SkiaModuleCanvas::setTextSize(float textSize)
 {
     _paint.setTextSize(textSize);

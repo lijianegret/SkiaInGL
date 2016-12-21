@@ -25,7 +25,7 @@ public:
     void setAlpha(float alpha);
     void setStrokeWidth(int width);
     void setAntiAlias(bool antiAlias);
-    int getTextSize(const char* text, int length);
+    int getTextSize(const char* text, int length, int size);
     void setTextSize(float textSize);
     
     void clear(uint32_t clearColor);

@@ -9,7 +9,9 @@
 #include "SkiaModule.h"
 #include "SkiaModuleCanvas.h"
 #include "SkiaModuleCanvasStore.h"
+#include <SkPaint.h>
 
+static SkPaint _paintForMeasure;
 SkiaModule* SkiaModule::_skiaModule = nullptr;
 
 SkiaModule* SkiaModule::getInstance()
@@ -69,9 +71,10 @@ void SkiaModule::setAntiAlias(bool antiAlias)
     _currentCanvas->setAntiAlias(antiAlias);
 }
 
-int SkiaModule::getTextSize(const char* text, int length)
+int SkiaModule::getTextSize(const char* text, int length, int size)
 {
-    return _currentCanvas->getTextSize(text, length);
+    _paintForMeasure.setTextSize(size);
+    return _paintForMeasure.measureText(text, length);
 }
 
 void SkiaModule::setTextSize(float textSize)
